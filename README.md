@@ -1,3 +1,9 @@
+## Installation
+1. `npm install git+https://github.com/dragonmantank/urban-telegram.git`
+1. `cd node_modules/@vonage/stt-connector`
+1. `npm install`
+1. `npm run build`
+
 ## Sample Usage
 
 ```js
