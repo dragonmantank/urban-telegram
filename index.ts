@@ -1,5 +1,8 @@
-import { GoogleCloudConfig, GoogleCloudSpeechDriver } from './google-cloud-speech';
-import { CognitiveSpeechConfig, AzureDriver } from './azure';
+import {
+  GoogleCloudConfig,
+  GoogleCloudSpeechDriver,
+} from "./google-cloud-speech";
+import { CognitiveSpeechConfig, AzureDriver } from "./azure";
 
 interface TranscribeCallbackFunction {
   (text: string): void;
@@ -13,44 +16,44 @@ interface Config {
 }
 
 class SpeechToText {
-    config: Config;
-    driver: any;
+  config: Config;
+  driver: any;
 
-    constructor(config: Config) {
-        this.config = config;
-        if (config.gCloudSpeech !== undefined) {
-          this.driver = new GoogleCloudSpeechDriver(this.config);
-        }
-
-        if (config.azureCognitiveSpeech !== undefined) {
-          this.driver = new AzureDriver(this.config);
-        }
+  constructor(config: Config) {
+    this.config = config;
+    if (config.gCloudSpeech !== undefined) {
+      this.driver = new GoogleCloudSpeechDriver(this.config);
     }
 
-    createNCCO(callbackUrl: string): object {
-        return [
+    if (config.azureCognitiveSpeech !== undefined) {
+      this.driver = new AzureDriver(this.config);
+    }
+  }
+
+  createNCCO(callbackUrl: string): object {
+    return [
+      {
+        action: "connect",
+        endpoint: [
           {
-              'action': 'connect',
-              'endpoint': [
-                  {
-                      'type': 'websocket',
-                      'uri': callbackUrl,
-                      'content-type': this.config.audioRate
-                  }
-              ]
-          }
-      ]
-    }
+            type: "websocket",
+            uri: callbackUrl,
+            "content-type": this.config.audioRate,
+          },
+        ],
+      },
+    ];
+  }
 
-    destroy(): void {
-      this.driver.destroy();
-    }
+  destroy(): void {
+    this.driver.destroy();
+  }
 
-    write(msg: string): void {
-      this.driver.write(msg);
-    }
+  write(msg: string): void {
+    this.driver.write(msg);
+  }
 }
 
 module.exports = {
-  SpeechToText: SpeechToText
-}
+  SpeechToText: SpeechToText,
+};

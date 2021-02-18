@@ -1,4 +1,5 @@
 ## Installation
+
 1. `npm install git+https://github.com/dragonmantank/urban-telegram.git`
 1. `cd node_modules/@vonage/stt-connector`
 1. `npm install`
@@ -7,51 +8,55 @@
 ## Sample Usage
 
 ```js
-const express = require('express');
+const express = require("express");
 const app = express();
-const expressWs = require('express-ws')(app);
+const expressWs = require("express-ws")(app);
 const port = 3000;
-const { SpeechToText } = require('@vonage/stt-connector');
+const { SpeechToText } = require("@vonage/stt-connector");
 
 const STTConnector = new SpeechToText({
-    audioRate: 'audio/l16;rate=16000',
-    handler: data => {
-        console.log(`Vonage Transcription: ${data}`);
-    },
-    // gCloudSpeech: {
-    //     keyFilename: './keys.json',
-    //     projectId: 'project-name'
-    // },
-    azureCognitiveSpeech: {
-        key: 'azure-key',
-        region: 'region'
+  audioRate: "audio/l16;rate=16000",
+  handler: (data) => {
+    console.log(`Vonage Transcription: ${data}`);
+  },
+  // gCloudSpeech: {
+  //     keyFilename: './keys.json',
+  //     projectId: 'project-name'
+  // },
+  azureCognitiveSpeech: {
+    key: "azure-key",
+    region: "region",
+  },
+});
+
+app.get("/", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(
+    JSON.stringify(
+      STTConnector.createNCCO(`${req.protocol}://${req.hostname}/echo`)
+    )
+  );
+});
+
+app.get("/events", (req, res) => {
+  // console.log(req);
+});
+
+app.ws("/echo", async (ws, req) => {
+  ws.on("message", async (msg) => {
+    if (typeof msg === "string") {
+      console.log(msg);
+    } else {
+      STTConnector.write(msg);
     }
-});
+  });
 
-app.get('/', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(STTConnector.createNCCO(`${req.protocol}://${req.hostname}/echo`)));
-});
-
-app.get('/events', (req, res) => {
-    // console.log(req);
-});
-
-app.ws('/echo', async (ws, req) => {
-    ws.on('message', async (msg) => {
-        if (typeof msg === 'string') {
-            console.log(msg);
-        } else {
-            STTConnector.write(msg);
-        }
-    });
-
-    ws.on('close', () => {
-        STTConnector.destroy();
-    });
+  ws.on("close", () => {
+    STTConnector.destroy();
+  });
 });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
 ```
