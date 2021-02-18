@@ -23,7 +23,7 @@ export class AzureDriver implements SpeechToTextDriver {
 
     this.format = sdk.AudioStreamFormat.getWaveFormatPCM(16000, 16, 1);
     this.pushStream = sdk.AudioInputStream.createPushStream(this.format);
-    this.audioConfig = sdk.AudioConfig.fromStreamInput(this.stream);
+    this.audioConfig = sdk.AudioConfig.fromStreamInput(this.pushStream);
     this.recognizer = new sdk.SpeechRecognizer(
       this.speechConfig,
       this.audioConfig
