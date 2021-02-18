@@ -17,8 +17,8 @@ export class AzureDriver implements SpeechToTextDriver {
   constructor(config: any = {}) {
     this.config = config;
     this.speechConfig = sdk.SpeechConfig.fromSubscription(
-      this.config.azure.key,
-      this.config.azure.region
+      this.config.azureCognitiveSpeech.key,
+      this.config.azureCognitiveSpeech.region
     );
 
     this.format = sdk.AudioStreamFormat.getWaveFormatPCM(16000, 16, 1);
