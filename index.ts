@@ -3,6 +3,7 @@ import {
   GoogleCloudSpeechDriver,
 } from "./google-cloud-speech";
 import { CognitiveSpeechConfig, AzureDriver } from "./azure";
+import { SpeechToTextDriver } from './speech-to-text-driver';
 
 interface TranscribeCallbackFunction {
   (text: string): void;
@@ -17,17 +18,24 @@ interface Config {
 
 class SpeechToText {
   config: Config;
-  driver: any;
+  driver: SpeechToTextDriver;
 
   constructor(config: Config) {
     this.config = config;
+    let driver: SpeechToTextDriver | undefined = undefined;
     if (config.gCloudSpeech !== undefined) {
-      this.driver = new GoogleCloudSpeechDriver(this.config);
+      driver = new GoogleCloudSpeechDriver(this.config);
     }
 
     if (config.azureCognitiveSpeech !== undefined) {
-      this.driver = new AzureDriver(this.config);
+      driver = new AzureDriver(this.config);
     }
+
+    if (driver === undefined) {
+      throw new Error("You need to pass valid configuration for a supported driver");
+    }
+
+    this.driver = driver;
   }
 
   createNCCO(callbackUrl: string): object {
@@ -49,8 +57,12 @@ class SpeechToText {
     this.driver.destroy();
   }
 
-  write(msg: string): void {
-    this.driver.write(msg);
+  stream(msg: string): void {
+    this.driver.stream(msg);
+  }
+
+  transcribeFile(path: string): string {
+    return this.driver.transcribeFile(path);
   }
 }
 

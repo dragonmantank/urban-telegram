@@ -1,4 +1,4 @@
-import { SpeechToTextDriver } from "./driver";
+import { SpeechToTextDriver } from "./speech-to-text-driver";
 const sdk = require("microsoft-cognitiveservices-speech-sdk");
 
 export interface CognitiveSpeechConfig {

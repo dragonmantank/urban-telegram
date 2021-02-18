@@ -1,4 +1,4 @@
-import { SpeechToTextDriver } from "./driver";
+import { SpeechToTextDriver } from "./speech-to-text-driver";
 const speech = require("@google-cloud/speech");
 
 export interface GoogleCloudConfig {

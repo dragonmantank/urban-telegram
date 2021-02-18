@@ -47,7 +47,7 @@ app.ws("/echo", async (ws, req) => {
     if (typeof msg === "string") {
       console.log(msg);
     } else {
-      STTConnector.write(msg);
+      STTConnector.stream(msg);
     }
   });
 
