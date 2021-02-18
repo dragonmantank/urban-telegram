@@ -25,13 +25,6 @@ export class GoogleCloudSpeechDriver implements SpeechToTextDriver {
         },
         interimResults: false,
       };
-
-      this.recognizeStream = this.client
-        .streamingRecognize(this.request)
-        .on("error", console.error)
-        .on("data", (data: any) => {
-          this.config.handler(data.results[0].alternatives[0].transcript);
-        });
     }
   }
 
@@ -39,7 +32,9 @@ export class GoogleCloudSpeechDriver implements SpeechToTextDriver {
    * @inheritdoc
    */
   destroy(): void {
-    this.recognizeStream.destroy();
+    if (this.recognizeStream !== 'undefined') {
+      this.recognizeStream.destroy();
+    }
   }
 
   /**
@@ -54,6 +49,14 @@ export class GoogleCloudSpeechDriver implements SpeechToTextDriver {
    * @inheritdoc
    */
   stream(audio: string): void {
+    if (this.recognizeStream === 'undefined') {
+      this.recognizeStream = this.client
+        .streamingRecognize(this.request)
+        .on("error", console.error)
+        .on("data", (data: any) => {
+          this.config.handler(data.results[0].alternatives[0].transcript);
+        });
+    }
     this.recognizeStream.write(audio);
   }
 
