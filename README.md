@@ -22,7 +22,7 @@ const STTConnector = new SpeechToText({
     //     keyFilename: './keys.json',
     //     projectId: 'project-name'
     // },
-    azure: {
+    azureCognitiveSpeech: {
         key: 'azure-key',
         region: 'region'
     }

@@ -1,5 +1,5 @@
 import { GoogleCloudConfig, GoogleCloudSpeechDriver } from './google-cloud-speech';
-import { AzureConfig, AzureDriver } from './azure';
+import { CognitiveSpeechConfig, AzureDriver } from './azure';
 
 interface TranscribeCallbackFunction {
   (text: string): void;
@@ -9,7 +9,7 @@ interface Config {
   audioRate: string;
   handler: TranscribeCallbackFunction;
   gCloudSpeech: GoogleCloudConfig;
-  azure: AzureConfig;
+  azureCognitiveSpeech: CognitiveSpeechConfig;
 }
 
 class SpeechToText {
@@ -22,7 +22,7 @@ class SpeechToText {
           this.driver = new GoogleCloudSpeechDriver(this.config);
         }
 
-        if (config.azure !== undefined) {
+        if (config.azureCognitiveSpeech !== undefined) {
           this.driver = new AzureDriver(this.config);
         }
     }

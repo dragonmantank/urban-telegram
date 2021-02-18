@@ -1,3 +1,4 @@
+import { SpeechToTextDriver } from './driver';
 const speech = require('@google-cloud/speech');
 
 export interface GoogleCloudConfig {
@@ -5,7 +6,7 @@ export interface GoogleCloudConfig {
     projectId: string;
 }
 
-export class GoogleCloudSpeechDriver {
+export class GoogleCloudSpeechDriver implements SpeechToTextDriver {
     config: any;
     client: any;
     request: any;
@@ -35,12 +36,32 @@ export class GoogleCloudSpeechDriver {
         }
     }
 
-    destroy() {
+    /**
+     * @inheritdoc
+     */
+    destroy(): void {
         this.recognizeStream.destroy();
     }
 
+    /**
+     * @deprecated Replaced with this.stream
+     * @param msg WebSocket message that is really an audio block
+     */
     write(msg: string) {
-        // console.log(msg);
-        this.recognizeStream.write(msg);
+        this.stream(msg);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    stream(audio: string): void {
+        this.recognizeStream.write(audio);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    transcribeFile(path: string): string {
+        return 'Hello World';
     }
 }
